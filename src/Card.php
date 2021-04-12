@@ -103,11 +103,9 @@ final class Card
         return $this->rank->toText().$this->suit->toText();
     }
 
-    public function toHtml(): string
+    public function toHtml(string $template = '<span id="%s" class="crd crd-%s st-%s">%s%s</span>'): string
     {
-        $span = '<span id="%s" class="crd crd-%s st-%s">%s%s</span>';
-
-        return \sprintf($span, $this->rank.$this->suit, $this->rank, $this->suit, $this->rank->toText(), $this->suit->toText());
+        return \sprintf($template, $this->rank.$this->suit, $this->rank, $this->suit, $this->rank->toText(), $this->suit->toText());
     }
 
     public function toUnicode(): string

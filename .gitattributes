@@ -1,6 +1,5 @@
 /.git*            export-ignore
 /.php_cs          export-ignore
 /phpunit.xml.dist export-ignore
-/LICENSE          export-ignore
 /README.md        export-ignore
 /tests/           export-ignore

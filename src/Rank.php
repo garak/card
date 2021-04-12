@@ -38,7 +38,7 @@ final class Rank
 
     public function toText(): string
     {
-        return 'T' === $this->value ? '=' : $this->value;
+        return $this->value;
     }
 
     public function getValue(): string

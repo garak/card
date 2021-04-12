@@ -20,12 +20,12 @@ final class Suit
         's' => 8,
     ];
 
-    private string $name;
+    private ?string $name = null;
 
     public function __construct(string $name)
     {
         if (!isset(self::$suits[$name])) {
-            throw new \InvalidArgumentException('Invalid suit name: '.$name);
+            throw new \InvalidArgumentException(\sprintf('Invalid suit name: %s.', $name));
         }
         $this->name = $name;
     }
