@@ -32,7 +32,7 @@ final class Suit
 
     public function __toString(): string
     {
-        return $this->name;
+        return (string) $this->name;
     }
 
     public function toText(): string
