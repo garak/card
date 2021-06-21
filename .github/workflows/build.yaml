@@ -1,0 +1,57 @@
+name: build
+
+on:
+    pull_request: ~
+    push: ~
+
+jobs:
+    phpstan:
+        runs-on: ubuntu-20.04
+        name: PHPStan
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+            - name: PHPStan
+              uses: docker://oskarstark/phpstan-ga
+              with:
+                  args: analyse
+    cs-fixer:
+        runs-on: ubuntu-20.04
+        name: PHP-CS-Fixer
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+            - name: Fix CS
+              uses: docker://oskarstark/php-cs-fixer-ga
+    tests:
+        runs-on: ubuntu-20.04
+        strategy:
+            max-parallel: 1
+            matrix:
+                php:
+                    - '7.4'
+                    - '8.0'
+                include:
+                    - description: 'lowest'
+                      php: '7.4'
+                      composer_option: '--prefer-lowest'
+                    - description: '7.4'
+                      php: '7.4'
+                    - description: 'latest'
+                      php: '8.0'
+        name: PHP ${{ matrix.php }} tests
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+            - name: Cache
+              uses: actions/cache@v2
+              with: 
+                  path: ~/.composer/cache/files
+                  key: ${{ matrix.php }}-${{ matrix.composer_option }} 
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php }}
+            - run: composer update --no-interaction --no-progress --ansi ${{ matrix.composer_option }}
+            - run: bin/phpunit
+
