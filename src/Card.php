@@ -60,6 +60,8 @@ final class Card
         'Qs' => '🂭',
         'Ks' => '🂮',
         'As' => '🂡',
+        'wb' => '🃏',
+        'wr' => '🂿',
     ];
 
     public function __construct(Rank $value, Suit $suit)
@@ -78,13 +80,19 @@ final class Card
     /**
      * @return array|self[]
      */
-    public static function getDeck(bool $shuffle = false): array
+    public static function getDeck(bool $shuffle = false, int $num = 1, bool $allowJokers = false): array
     {
         $deck = [];
-        foreach (Suit::$suits as $seed => $seedSymbol) {
-            foreach (Rank::$ranks as $value => $int) {
-                $deck[] = new self(new Rank((string) $value), new Suit($seed));
+        for ($i = 1; $i <= $num; ++$i) {
+            foreach (Suit::$suits as $seed => $seedSymbol) {
+                foreach (Rank::$ranks as $value => $int) {
+                    $deck[] = new self(new Rank((string) $value), new Suit($seed));
+                }
             }
+        }
+        if ($allowJokers) {
+            $deck[] = self::fromRankSuit('wb');
+            $deck[] = self::fromRankSuit('wr');
         }
         if ($shuffle) {
             \shuffle($deck);

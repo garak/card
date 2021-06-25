@@ -26,6 +26,9 @@ final class CardTest extends TestCase
     {
         self::assertIsArray(Card::getDeck());
         self::assertIsArray(Card::getDeck(true));
+        self::assertCount(52, Card::getDeck());
+        self::assertCount(104, Card::getDeck(false, 2));
+        self::assertCount(106, Card::getDeck(false, 2, true));
     }
 
     public function testToString(): void

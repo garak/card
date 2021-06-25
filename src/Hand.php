@@ -27,7 +27,7 @@ abstract class Hand
     abstract public function __construct(array $cards, bool $start = true, ?callable $checking = null, ?callable $sorting = null);
 
     /**
-     * @return array<int, self>
+     * @return array<int, static>
      */
     public static function deal(?callable $check = null, ?callable $sort = null): array
     {

@@ -12,19 +12,27 @@ final class Suit
         's' => '♠',
     ];
 
+    /** @var array<string, string> */
+    public static array $jokerColors = [
+        'b' => 'black',
+        'r' => 'red',
+    ];
+
     /** @var array<string, int> */
     private static array $values = [
         'c' => 1,
         'd' => 2,
         'h' => 4,
         's' => 8,
+        'b' => -1,
+        'r' => -1,
     ];
 
     private ?string $name = null;
 
     public function __construct(string $name)
     {
-        if (!isset(self::$suits[$name])) {
+        if (!isset(self::$suits[$name]) && !isset(self::$jokerColors[$name])) {
             throw new \InvalidArgumentException(\sprintf('Invalid suit name: %s.', $name));
         }
         $this->name = $name;

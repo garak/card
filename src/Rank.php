@@ -25,7 +25,7 @@ final class Rank
 
     public function __construct(string $value)
     {
-        if (!isset(self::$ranks[$value])) {
+        if (!isset(self::$ranks[$value]) && 'w' !== $value) {
             throw new \InvalidArgumentException('Invalid value: '.$value);
         }
         $this->value = $value;
@@ -48,7 +48,7 @@ final class Rank
 
     public function getInt(): int
     {
-        return self::$ranks[$this->value];
+        return self::$ranks[$this->value] ?? -1;
     }
 
     public function isEqual(self $rank): bool

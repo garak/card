@@ -43,3 +43,16 @@ $card = Card::fromRankSuit('Kh');
 echo $card->toUnicode(); // will output "🂾"
 ```
 
+You can also get a full deck:
+
+```php
+<?php
+
+require 'vendor/autoload.php';
+
+use Garak\Card\Card;
+
+$orderedCards = Card::getDeck();
+$shuffledCards = Card::getDeck(true);
+$doubleDeckWithJokers = Card::getDeck(true, 2, true);
+```
