@@ -13,7 +13,7 @@ This library offers few VO classes to use inside Card-related applications:
 Some more classes, more elaborate, are available. They are abstract, and thus require a custom implementation to extend them:
 
 * `Hand`: represent a set of Card objects, usually the ones assigned to a player
-* `HandsTrick`: represent a trick of hands (think for example to Poker, when players show their hands to declare a winneer)
+* `HandsTrick`: represent a trick of hands (think for example to Poker, when players show their hands to declare a winner)
 * `CardTrick`: represent a trick of cards (think for example to the 4 cards of a Bridge turn)
 
 ## Installation
