@@ -10,7 +10,7 @@ final class HandTest extends TestCase
 {
     public function testCreateFromDeck(): void
     {
-        [$hand, , , ] = HandStub::deal();
+        [$hand] = HandStub::deal();
         self::assertCount(13, $hand->getCards());
     }
 
@@ -91,8 +91,6 @@ final class HandTest extends TestCase
 
     private static function getCheck(): \Closure
     {
-        return \Closure::fromCallable(function (array $cards): bool {
-            return 13 === \count($cards);
-        });
+        return \Closure::fromCallable(fn (array $cards): bool => 13 === \count($cards));
     }
 }
