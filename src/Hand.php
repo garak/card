@@ -41,7 +41,7 @@ abstract class Hand
         return $hands;
     }
 
-    public static function createFromString(string $cards, bool $starting = true, ?callable $check = null, ?callable $sort = null): self
+    public static function createFromString(string $cards, bool $starting = true, ?callable $check = null, ?callable $sort = null): static
     {
         $handCards = \array_map(static fn (string $rs): Card => Card::fromRankSuit($rs), \explode(',', $cards));
 
@@ -99,7 +99,7 @@ abstract class Hand
         return 2 === \strlen($cards) || \strpos($cards, ',') > 0;
     }
 
-    public function play(Card $card, ?callable $sort = null): self
+    public function play(Card $card, ?callable $sort = null): static
     {
         $played = null;
         foreach ($this->cards as $key => $cardInHand) {

@@ -20,13 +20,13 @@ clear:	## clear docker image
 	docker rmi -f garak/card
 
 cs:	## coding standard check via php-cs-fixer
-	docker-compose exec php /bin/sh -c 'test -f ${CS} && php ${CS} fix -v || ${WGET_CS} ${CS} && php ${CS} fix -v'
+	docker-compose exec php /bin/sh -c '{ test -f ${CS} && php ${CS} fix -v; } || { ${WGET_CS} ${CS} && php ${CS} fix -v; }'
 
 install:	## install vendors
 	docker-compose exec php composer install
 
 stan:	## static analysis via phpstan
-	docker-compose exec php /bin/sh -c 'test -f ${PS} && php ${PS} analyse -v || ${WGET_PS} ${PS} && php ${PS} analyse -v'
+	docker-compose exec php /bin/sh -c '{ test -f ${PS} && php ${PS} analyse -v; } || { ${WGET_PS} ${PS} && php ${PS} analyse -v; }'
 
 start:	## start docker image
 	docker-compose up -d
