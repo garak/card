@@ -57,4 +57,12 @@ jobs:
                   php-version: ${{ matrix.php }}
             - run: composer update --no-interaction --no-progress --ansi ${{ matrix.composer_option }}
             - run: vendor/bin/phpunit
+            - name: Test & publish code coverage
+              uses: paambaati/codeclimate-action@v3.2.0
+              env:
+                  CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
+              with:
+                  coverageCommand: vendor/bin/phpunit --coverage-clover coverage.xml
+                  coverageLocations: ${{github.workspace}}/coverage.xml:clover
+                  debug: true
 
