@@ -8,7 +8,7 @@ PS = vendor/bin/phpstan
 
 args = `arg="$(filter-out $@,$(MAKECMDGOALS))" && echo $${arg:-${1}}`
 
-.PHONY: build clear cs install start stop test update
+.PHONY: build clear coverage cs install start stop test update
 
 help:
 	@awk 'BEGIN {FS = ":.*##"; printf "Use: make \033[36m<target>\033[0m\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
@@ -18,6 +18,9 @@ build:	## build image
 
 clear:	## clear docker image
 	docker rmi -f garak/card
+
+coverage:	## run test coverage via phpunit
+	docker-compose exec php phpdbg -qrr vendor/bin/phpunit --coverage-html build
 
 cs:	## coding standard check via php-cs-fixer
 	docker-compose exec php /bin/sh -c '{ test -f ${CS} && php ${CS} fix -v; } || { ${WGET_CS} ${CS} && php ${CS} fix -v; }'

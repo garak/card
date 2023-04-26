@@ -1,3 +1,4 @@
-/*.cache
+/.*.cache
+/build
 /composer.lock
-/vendor/
+/vendor

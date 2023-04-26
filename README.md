@@ -1,5 +1,12 @@
 # PHP Card library
 
+[![Latest Stable Version](http://poser.pugx.org/garak/card/v)](https://packagist.org/packages/garak/card)
+[![Latest Unstable Version](http://poser.pugx.org/garak/card/v/unstable)](https://packagist.org/packages/garak/card)
+[![License](http://poser.pugx.org/garak/card/license)](https://packagist.org/packages/garak/card)
+[![PHP Version Require](http://poser.pugx.org/garak/card/require/php)](https://packagist.org/packages/garak/card)
+[![Maintainability](https://api.codeclimate.com/v1/badges/28c8c9ee8607b93c4727/maintainability)](https://codeclimate.com/github/garak/card/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/28c8c9ee8607b93c4727/test_coverage)](https://codeclimate.com/github/garak/card/test_coverage)
+
 <img src="https://user-images.githubusercontent.com/179866/114412093-10e4a700-9bad-11eb-80cf-46e007ff6bde.jpg" alt="https://commons.wikimedia.org/wiki/Category:Playing_cards#/media/File:A_pile_of_playing_cards.jpg">
 
 ## Introduction
