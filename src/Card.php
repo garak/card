@@ -2,12 +2,8 @@
 
 namespace Garak\Card;
 
-final class Card
+final class Card implements \Stringable
 {
-    private Rank $rank;
-
-    private Suit $suit;
-
     private const CODES = [
         '2c' => '🃒',
         '3c' => '🃓',
@@ -64,10 +60,8 @@ final class Card
         'wr' => '🂿',
     ];
 
-    public function __construct(Rank $value, Suit $suit)
+    public function __construct(private readonly Rank $rank, private readonly Suit $suit)
     {
-        $this->rank = $value;
-        $this->suit = $suit;
     }
 
     public static function fromRankSuit(string $rankSuit): self

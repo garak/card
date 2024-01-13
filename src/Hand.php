@@ -4,10 +4,10 @@ namespace Garak\Card;
 
 /**
  * A Hand is composed by Cards.
- * You must extend this class, and pass to constructor your anonymous functions to check starting hand
- * and to sort it.
+ * You must extend this class, and pass to constructor your anonymous functions to check starting
+ * hand and to sort it.
  */
-abstract class Hand
+abstract class Hand implements \Stringable
 {
     /** @var array<int|string, Card> */
     protected array $cards;
@@ -24,12 +24,12 @@ abstract class Hand
      *
      * @param array<int|string, Card> $cards
      */
-    abstract public function __construct(array $cards, bool $start = true, ?callable $checking = null, ?callable $sorting = null);
+    abstract public function __construct(array $cards, bool $start = true, callable $checking = null, callable $sorting = null);
 
     /**
      * @return array<int, static>
      */
-    public static function deal(?callable $check = null, ?callable $sort = null): array
+    public static function deal(callable $check = null, callable $sort = null): array
     {
         $deck = Card::getDeck(true);
         $cards = \array_chunk($deck, 13);
@@ -41,7 +41,7 @@ abstract class Hand
         return $hands;
     }
 
-    public static function createFromString(string $cards, bool $starting = true, ?callable $check = null, ?callable $sort = null): static
+    public static function createFromString(string $cards, bool $starting = true, callable $check = null, callable $sort = null): static
     {
         $handCards = \array_map(static fn (string $rs): Card => Card::fromRankSuit($rs), \explode(',', $cards));
 
@@ -53,14 +53,14 @@ abstract class Hand
         return \implode(',', $this->cards);
     }
 
-    public function toText(?Suit $trump = null): string
+    public function toText(Suit $trump = null): string
     {
         $this->sort($trump);
 
         return \implode(' ', \array_map(static fn (Card $card): string => $card->toText(), $this->cards));
     }
 
-    public function toHtml(?Suit $trump = null): string
+    public function toHtml(Suit $trump = null): string
     {
         $this->sort($trump);
 
@@ -75,7 +75,7 @@ abstract class Hand
         return $this->cards;
     }
 
-    public function getRandomCard(?Suit $suit = null): Card
+    public function getRandomCard(Suit $suit = null): Card
     {
         $count = \count($this->cards);
         if ($count < 1) {
@@ -99,7 +99,7 @@ abstract class Hand
         return 2 === \strlen($cards) || \strpos($cards, ',') > 0;
     }
 
-    public function play(Card $card, ?callable $sort = null): static
+    public function play(Card $card, callable $sort = null): static
     {
         $played = null;
         foreach ($this->cards as $key => $cardInHand) {

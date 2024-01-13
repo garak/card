@@ -2,7 +2,7 @@
 
 namespace Garak\Card;
 
-final class Rank
+final class Rank implements \Stringable
 {
     /** @var array<int|string, int> */
     public static array $ranks = [
@@ -21,14 +21,11 @@ final class Rank
         'A' => 14,
     ];
 
-    private string $value;
-
-    public function __construct(string $value)
+    public function __construct(private readonly string $value)
     {
         if (!isset(self::$ranks[$value]) && 'w' !== $value) {
             throw new \InvalidArgumentException('Invalid value: '.$value);
         }
-        $this->value = $value;
     }
 
     public function __toString(): string

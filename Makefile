@@ -1,6 +1,6 @@
 WGET_CS = wget https://cs.symfony.com/download/php-cs-fixer-v3.phar -O
 CS = vendor/bin/php-cs-fixer
-WGET_PS = wget https://github.com/phpstan/phpstan/releases/download/1.10.13/phpstan.phar -O
+WGET_PS = wget https://github.com/phpstan/phpstan/releases/download/1.10.55/phpstan.phar -O
 PS = vendor/bin/phpstan
 
 %:

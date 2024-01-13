@@ -6,7 +6,7 @@ use Garak\Card\Hand;
 
 final class HandStub extends Hand
 {
-    public function __construct(array $cards, bool $start = true, ?callable $checking = null, ?callable $sorting = null)
+    public function __construct(array $cards, bool $start = true, callable $checking = null, callable $sorting = null)
     {
         if (null === $checking) {
             $checking = static fn (array $cards): bool => 13 === \count($cards);

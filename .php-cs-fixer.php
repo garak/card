@@ -10,7 +10,7 @@ return (new PhpCsFixer\Config())
     ->setRules([
         '@Symfony' => true,
         '@Symfony:risky' => true,
-        '@PHP80Migration:risky' => true,
+        '@PHP81Migration' => true,
         '@PHPUnit84Migration:risky' => true,
         'declare_strict_types' => false,
         'native_function_invocation' => ['include' => ['@all']],

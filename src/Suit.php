@@ -2,7 +2,7 @@
 
 namespace Garak\Card;
 
-final class Suit
+final class Suit implements \Stringable
 {
     /** @var array<string, string> */
     public static array $suits = [
