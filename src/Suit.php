@@ -28,19 +28,16 @@ final class Suit implements \Stringable
         'r' => -1,
     ];
 
-    private ?string $name = null;
-
-    public function __construct(string $name)
+    public function __construct(private readonly string $name)
     {
         if (!isset(self::$suits[$name]) && !isset(self::$jokerColors[$name])) {
             throw new \InvalidArgumentException(\sprintf('Invalid suit name: %s.', $name));
         }
-        $this->name = $name;
     }
 
     public function __toString(): string
     {
-        return (string) $this->name;
+        return $this->name;
     }
 
     public function toText(): string

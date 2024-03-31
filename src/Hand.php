@@ -24,7 +24,12 @@ abstract class Hand implements \Stringable
      *
      * @param array<int|string, Card> $cards
      */
-    abstract public function __construct(array $cards, bool $start = true, callable $checking = null, callable $sorting = null);
+    abstract public function __construct(
+        array $cards,
+        bool $start = true,
+        callable $checking = null,
+        callable $sorting = null
+    );
 
     /**
      * @return array<int, static>
