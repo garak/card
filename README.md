@@ -11,17 +11,17 @@
 
 ## Introduction
 
-This library offers few VO classes to use inside Card-related applications:
+This library offers a few VO classes to use inside Card-related applications:
 
-* `Card`: represent a Card, for example an ace of spades.
-* `Rank`: represent the rank value of a Card, for example "A" or "7" ("T" is used for 10, to keep same length).
-* `Suit`: represent the card suit, for example spades or diamonds.
+* `Card`: represents a Card, for example an ace of spades.
+* `Rank`: represents the rank value of a Card, for example "A" or "7" ("T" is used for 10, to keep same length).
+* `Suit`: represents the card suit, for example spades or diamonds.
 
 Some more classes, more elaborate, are available. They are abstract, and thus require a custom implementation to extend them:
 
-* `Hand`: represent a set of Card objects, usually the ones assigned to a player
-* `HandsTrick`: represent a trick of hands (think for example to Poker, when players show their hands to declare a winner)
-* `CardTrick`: represent a trick of cards (think for example to the 4 cards of a Bridge turn)
+* `Hand`: represents a set of Card objects, usually the ones assigned to a player
+* `HandsTrick`: represents a trick of hands (think for example Poker, when players show their hands to declare a winner)
+* `CardTrick`: represents a trick of cards (think for example the 4 cards of a Bridge turn)
 
 ## Installation
 
