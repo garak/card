@@ -45,7 +45,7 @@ final class Suit implements \Stringable
         return $this->getSymbol();
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }

@@ -3,17 +3,20 @@
 namespace Garak\Card\Test;
 
 use Garak\Card\Rank;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 final class RankTest extends TestCase
 {
-    public function testConstructor(): void
+    #[Test]
+    public function cnstructor(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         new Rank('invalid');
     }
 
-    public function testGetInt(): void
+    #[Test]
+    public function getInt(): void
     {
         $rank = new Rank('J');
         self::assertEquals(11, $rank->getInt());

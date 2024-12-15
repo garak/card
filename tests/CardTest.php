@@ -5,57 +5,66 @@ namespace Garak\Card\Test;
 use Garak\Card\Card;
 use Garak\Card\Rank;
 use Garak\Card\Suit;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 final class CardTest extends TestCase
 {
-    public function testConstructor(): void
+    #[Test]
+    public function constructor(): void
     {
         $card = new Card(new Rank('2'), new Suit('d'));
-        self::assertNotNull($card);
+        self::assertEquals('2', $card->getRank()->getValue());
     }
 
-    public function testConstructFromString(): void
+    #[Test]
+    public function constructFromString(): void
     {
         $card = Card::fromRankSuit('Td');
         self::assertEquals('T', $card->getRank()->getValue());
         self::assertEquals('d', $card->getSuit()->getName());
     }
 
-    public function testGetDeck(): void
+    #[Test]
+    public function getDeck(): void
     {
-        self::assertIsArray(Card::getDeck());
-        self::assertIsArray(Card::getDeck(true));
+        self::assertNotEmpty(Card::getDeck());
+        self::assertNotEmpty(Card::getDeck(true));
         self::assertCount(52, Card::getDeck());
         self::assertCount(104, Card::getDeck(false, 2));
         self::assertCount(106, Card::getDeck(false, 2, true));
     }
 
-    public function testToString(): void
+    #[Test]
+    public function toStringMethod(): void
     {
         $card = new Card(new Rank('5'), new Suit('c'));
         self::assertEquals('5c', (string) $card);
     }
 
-    public function testToText(): void
+    #[Test]
+    public function toText(): void
     {
         $card = new Card(new Rank('J'), new Suit('s'));
         self::assertEquals('J♠', $card->toText());
     }
 
-    public function testToHtml(): void
+    #[Test]
+    public function toHtml(): void
     {
         $card = new Card(new Rank('K'), new Suit('h'));
         self::assertEquals('<span id="Kh" class="crd crd-K st-h">K♥</span>', $card->toHtml());
     }
 
-    public function testToUnicode(): void
+    #[Test]
+    public function toUnicode(): void
     {
         $card = new Card(new Rank('A'), new Suit('s'));
         self::assertEquals('🂡', $card->toUnicode());
     }
 
-    public function testIsEqual(): void
+    #[Test]
+    public function isEqual(): void
     {
         $card1 = new Card(new Rank('A'), new Suit('s'));
         $card2 = new Card(new Rank('A'), new Suit('s'));
