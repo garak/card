@@ -14,7 +14,7 @@
 This library offers a few VO classes to use inside Card-related applications:
 
 * `Card`: represents a Card, for example an ace of spades.
-* `Rank`: represents the rank value of a Card, for example "A" or "7" ("T" is used for 10, to keep same length).
+* `Rank`: represents the rank value of a Card, for example "A" or "7" ("T" is used for 10, to keep the same length).
 * `Suit`: represents the card suit, for example spades or diamonds.
 
 Some more classes, more elaborate, are available. They are abstract, and thus require a custom implementation to extend them:
