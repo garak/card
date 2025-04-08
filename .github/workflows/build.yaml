@@ -69,4 +69,3 @@ jobs:
                   coverageCommand: vendor/bin/phpunit --coverage-clover coverage.xml
                   coverageLocations: ${{github.workspace}}/coverage.xml:clover
 
-
