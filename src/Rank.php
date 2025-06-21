@@ -50,6 +50,6 @@ final class Rank implements \Stringable
 
     public function isEqual(self $rank): bool
     {
-        return $this->value === $rank->getValue();
+        return $this->value === $rank->value;
     }
 }

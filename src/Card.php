@@ -127,6 +127,6 @@ final class Card implements \Stringable
 
     public function isEqual(self $card): bool
     {
-        return $this->suit->isEqual($card->getSuit()) && $this->rank->isEqual($card->getRank());
+        return $this->suit->isEqual($card->suit) && $this->rank->isEqual($card->rank);
     }
 }

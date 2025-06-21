@@ -21,4 +21,11 @@ final class SuitTest extends TestCase
         $suit = new Suit('d');
         self::assertEquals(2, $suit->getInt());
     }
+
+    #[Test]
+    public function toUnicode(): void
+    {
+        $suit = new Suit('d');
+        self::assertEquals('♦️', $suit->toUnicode());
+    }
 }

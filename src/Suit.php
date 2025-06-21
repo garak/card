@@ -4,6 +4,13 @@ namespace Garak\Card;
 
 final class Suit implements \Stringable
 {
+    private const CODES = [
+        'c' => '♣️',
+        'd' => '♦️',
+        'h' => '♥️',
+        's' => '♠️',
+    ];
+
     /** @var array<string, string> */
     public static array $suits = [
         'c' => '♣',
@@ -45,6 +52,11 @@ final class Suit implements \Stringable
         return $this->getSymbol();
     }
 
+    public function toUnicode(): string
+    {
+        return self::CODES[$this->name];
+    }
+
     public function getName(): string
     {
         return $this->name;
@@ -62,6 +74,6 @@ final class Suit implements \Stringable
 
     public function isEqual(self $suit): bool
     {
-        return $this->name === $suit->getName();
+        return $this->name === $suit->name;
     }
 }

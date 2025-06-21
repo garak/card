@@ -60,6 +60,6 @@ require 'vendor/autoload.php';
 use Garak\Card\Card;
 
 $orderedCards = Card::getDeck();
-$shuffledCards = Card::getDeck(true);
-$doubleDeckWithJokers = Card::getDeck(true, 2, true);
+$shuffledCards = Card::getDeck(shuffle: true);
+$doubleDeckWithJokers = Card::getDeck(shuffle: true, num: 2, allowJokers: true);
 ```
