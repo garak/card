@@ -1,8 +1,3 @@
-WGET_CS = wget https://cs.symfony.com/download/php-cs-fixer-v3.phar -O
-CS = vendor/bin/php-cs-fixer
-WGET_PS = wget https://github.com/phpstan/phpstan/releases/download/2.1.17/phpstan.phar -O
-PS = vendor/bin/phpstan
-
 %:
 	@:
 
@@ -23,13 +18,13 @@ coverage:	## run test coverage via phpunit
 	docker compose exec php phpdbg -qrr vendor/bin/phpunit --coverage-html build
 
 cs:	## coding standard check via php-cs-fixer
-	docker compose exec php /bin/sh -c '{ test -f ${CS} && php ${CS} fix -v; } || { ${WGET_CS} ${CS} && php ${CS} fix -v; }'
+	docker compose exec php php vendor/bin/php-cs-fixer fix -v
 
 install:	## install vendors
 	docker compose exec php composer install
 
 stan:	## static analysis via phpstan
-	docker compose exec php /bin/sh -c '{ test -f ${PS} && php ${PS} analyse -v; } || { ${WGET_PS} ${PS} && php ${PS} analyse -v; }'
+	docker compose exec php php vendor/bin/phpstan analyse -v
 
 start:	## start docker image
 	docker compose up -d
