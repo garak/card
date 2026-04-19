@@ -15,7 +15,7 @@ clear:	## clear docker image
 	docker rmi -f garak/card
 
 coverage:	## run test coverage via phpunit
-	docker compose exec php phpdbg -qrr vendor/bin/phpunit --coverage-html build
+	docker compose exec php php -d pcov.enabled=1 vendor/bin/phpunit --coverage-html build
 
 cs:	## coding standard check via php-cs-fixer
 	docker compose exec php php vendor/bin/php-cs-fixer fix -v
@@ -35,5 +35,5 @@ stop:	## stop docker image
 test:	## run test via phpunit
 	docker compose exec php vendor/bin/phpunit
 
-update:	## install vendors
+update:	## update vendors
 	docker compose exec php composer update
