@@ -2,6 +2,8 @@
 
 namespace Garak\Card;
 
+use Random\Randomizer;
+
 final class Card implements \Stringable
 {
     private const CODES = [
@@ -89,7 +91,7 @@ final class Card implements \Stringable
             $deck[] = self::fromRankSuit('wr');
         }
         if ($shuffle) {
-            \shuffle($deck);
+            return (new Randomizer())->shuffleArray($deck);
         }
 
         return $deck;

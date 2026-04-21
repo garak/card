@@ -103,6 +103,6 @@ final class HandTest extends TestCase
 
     private static function getCheck(): \Closure
     {
-        return \Closure::fromCallable(fn (array $cards): bool => 13 === \count($cards));
+        return \Closure::fromCallable(static fn (array $cards): bool => 13 === \count($cards));
     }
 }
