@@ -9,16 +9,9 @@ use PHPUnit\Framework\TestCase;
 final class RankTest extends TestCase
 {
     #[Test]
-    public function cnstructor(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        new Rank('invalid');
-    }
-
-    #[Test]
     public function getInt(): void
     {
-        $rank = new Rank('J');
+        $rank = Rank::Jack;
         self::assertEquals(11, $rank->getInt());
     }
 }

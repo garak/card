@@ -2,50 +2,14 @@
 
 namespace Garak\Card;
 
-final class Suit implements \Stringable
+enum Suit: string
 {
-    private const CODES = [
-        'c' => '♣️',
-        'd' => '♦️',
-        'h' => '♥️',
-        's' => '♠️',
-    ];
-
-    /** @var array<string, string> */
-    public static array $suits = [
-        'c' => '♣',
-        'd' => '♦',
-        'h' => '♥',
-        's' => '♠',
-    ];
-
-    /** @var array<string, string> */
-    public static array $jokerColors = [
-        'b' => 'black',
-        'r' => 'red',
-    ];
-
-    /** @var array<string, int> */
-    private static array $values = [
-        'c' => 1,
-        'd' => 2,
-        'h' => 4,
-        's' => 8,
-        'b' => -1,
-        'r' => -1,
-    ];
-
-    public function __construct(private readonly string $name)
-    {
-        if (!isset(self::$suits[$name]) && !isset(self::$jokerColors[$name])) {
-            throw new \InvalidArgumentException(\sprintf('Invalid suit name: %s.', $name));
-        }
-    }
-
-    public function __toString(): string
-    {
-        return $this->name;
-    }
+    case Clubs = 'c';
+    case Diamonds = 'd';
+    case Hearts = 'h';
+    case Spades = 's';
+    case BlackJoker = 'b';
+    case RedJoker = 'r';
 
     public function toText(): string
     {
@@ -54,26 +18,44 @@ final class Suit implements \Stringable
 
     public function toUnicode(): string
     {
-        return self::CODES[$this->name];
+        return match ($this) {
+            self::Clubs => '♣️',
+            self::Diamonds => '♦️',
+            self::Hearts => '♥️',
+            self::Spades => '♠️',
+            default => throw new \LogicException(\sprintf('Suit %s has no unicode representation.', $this->value)),
+        };
     }
 
     public function getName(): string
     {
-        return $this->name;
+        return $this->value;
     }
 
     public function getSymbol(): string
     {
-        return self::$suits[$this->name];
+        return match ($this) {
+            self::Clubs => '♣',
+            self::Diamonds => '♦',
+            self::Hearts => '♥',
+            self::Spades => '♠',
+            default => throw new \LogicException(\sprintf('Suit %s has no symbol.', $this->value)),
+        };
     }
 
     public function getInt(): int
     {
-        return self::$values[$this->name];
+        return match ($this) {
+            self::Clubs => 1,
+            self::Diamonds => 2,
+            self::Hearts => 4,
+            self::Spades => 8,
+            self::BlackJoker, self::RedJoker => -1,
+        };
     }
 
     public function isEqual(self $suit): bool
     {
-        return $this->name === $suit->name;
+        return $this === $suit;
     }
 }

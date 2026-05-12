@@ -9,23 +9,14 @@ use PHPUnit\Framework\TestCase;
 final class SuitTest extends TestCase
 {
     #[Test]
-    public function constructor(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        new Suit('invalid');
-    }
-
-    #[Test]
     public function getInt(): void
     {
-        $suit = new Suit('d');
-        self::assertEquals(2, $suit->getInt());
+        self::assertEquals(2, Suit::Diamonds->getInt());
     }
 
     #[Test]
     public function toUnicode(): void
     {
-        $suit = new Suit('d');
-        self::assertEquals('♦️', $suit->toUnicode());
+        self::assertEquals('♦️', Suit::Diamonds->toUnicode());
     }
 }

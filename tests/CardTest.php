@@ -13,7 +13,7 @@ final class CardTest extends TestCase
     #[Test]
     public function constructor(): void
     {
-        $card = new Card(new Rank('2'), new Suit('d'));
+        $card = new Card(Rank::Two, Suit::Diamonds);
         self::assertEquals('2', $card->getRank()->getValue());
     }
 
@@ -38,39 +38,49 @@ final class CardTest extends TestCase
     #[Test]
     public function toStringMethod(): void
     {
-        $card = new Card(new Rank('5'), new Suit('c'));
+        $card = new Card(Rank::Five, Suit::Clubs);
         self::assertEquals('5c', (string) $card);
     }
 
     #[Test]
     public function toText(): void
     {
-        $card = new Card(new Rank('J'), new Suit('s'));
+        $card = new Card(Rank::Jack, Suit::Spades);
         self::assertEquals('J♠', $card->toText());
     }
 
     #[Test]
     public function toHtml(): void
     {
-        $card = new Card(new Rank('K'), new Suit('h'));
+        $card = new Card(Rank::King, Suit::Hearts);
         self::assertEquals('<span id="Kh" class="crd crd-K st-h">K♥</span>', $card->toHtml());
     }
 
     #[Test]
     public function toUnicode(): void
     {
-        $card = new Card(new Rank('A'), new Suit('s'));
+        $card = new Card(Rank::Ace, Suit::Spades);
         self::assertEquals('🂡', $card->toUnicode());
+    }
+
+    #[Test]
+    public function blackJoker(): void
+    {
+        $card = new Card(Rank::Joker, Suit::BlackJoker);
+        self::assertEquals('wb', (string) $card);
+        self::assertEquals('🃏', $card->toUnicode());
+        self::assertEquals(Rank::Joker, $card->getRank());
+        self::assertEquals(Suit::BlackJoker, $card->getSuit());
     }
 
     #[Test]
     public function isEqual(): void
     {
-        $card1 = new Card(new Rank('A'), new Suit('s'));
-        $card2 = new Card(new Rank('A'), new Suit('s'));
+        $card1 = new Card(Rank::Ace, Suit::Spades);
+        $card2 = new Card(Rank::Ace, Suit::Spades);
         self::assertTrue($card1->isEqual($card2));
         self::assertTrue($card2->isEqual($card1));
-        $card3 = new Card(new Rank('A'), new Suit('d'));
+        $card3 = new Card(Rank::Ace, Suit::Diamonds);
         self::assertFalse($card1->isEqual($card3));
     }
 }
