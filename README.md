@@ -40,10 +40,10 @@ use Garak\Card\Card;
 use Garak\Card\Rank;
 use Garak\Card\Suit;
 
-$card = new Card(new Rank('A'), new Suit('d'));
+$card = new Card(Rank::Ace, Suit::Diamonds);
 echo $card; // will output "Ad"
 
-$card = new Card(new Rank('7'), new Suit('s'));
+$card = new Card(Rank::Seven, Suit::Spades);
 echo $card->toText(); // will output "7♠"
 
 $card = Card::fromRankSuit('Kh');
@@ -63,3 +63,66 @@ $orderedCards = Card::getDeck();
 $shuffledCards = Card::getDeck(shuffle: true);
 $doubleDeckWithJokers = Card::getDeck(shuffle: true, num: 2, allowJokers: true);
 ```
+
+## Upgrading from version 0.8
+
+`Rank` and `Suit` have been converted from regular classes to backed enums.
+The following breaking changes apply.
+
+### Instantiation
+
+| Before | After |
+|---|---|
+| `new Rank('A')` | `Rank::Ace` |
+| `new Rank('T')` | `Rank::Ten` |
+| `new Suit('s')` | `Suit::Spades` |
+| `new Suit('h')` | `Suit::Hearts` |
+
+When you only have a string at runtime (e.g. from user input or persistence), use the enum's `from()` factory:
+
+```php
+$rank = Rank::from('A');  // Rank::Ace
+$suit = Suit::from('s');  // Suit::Spades
+```
+
+### Invalid values
+
+Previously invalid values threw `\InvalidArgumentException`.
+They now throw `\ValueError` (the standard PHP exception for invalid enum values):
+
+```php
+// Before
+try {
+    new Rank('X');
+} catch (\InvalidArgumentException $e) { ... }
+
+// After
+try {
+    Rank::from('X');
+} catch (\ValueError $e) { ... }
+```
+
+Use `Rank::tryFrom('X')` / `Suit::tryFrom('X')` to get `null` instead of an exception.
+
+### Iterating over all ranks or suits
+
+The public static arrays `Rank::$ranks` and `Suit::$suits` have been removed.
+Use the standard enum `cases()` method instead:
+
+```php
+// Before
+foreach (Rank::$ranks as $symbol => $intValue) { ... }
+foreach (Suit::$suits as $symbol => $unicodeChar) { ... }
+
+// After
+foreach (Rank::cases() as $rank) {
+    $symbol   = $rank->value;    // e.g. 'A'
+    $intValue = $rank->getInt(); // e.g. 14
+}
+foreach (Suit::cases() as $suit) {
+    $symbol    = $suit->value;      // e.g. 's'
+    $unicodeChar = $suit->toText(); // e.g. '♠'
+}
+```
+
+`Suit::$jokerColors` has also been removed; joker suits are now `Suit::BlackJoker` and `Suit::RedJoker`.

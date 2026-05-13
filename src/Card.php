@@ -4,65 +4,9 @@ namespace Garak\Card;
 
 use Random\Randomizer;
 
-final class Card implements \Stringable
+final readonly class Card implements \Stringable
 {
-    private const CODES = [
-        '2c' => '🃒',
-        '3c' => '🃓',
-        '4c' => '🃔',
-        '5c' => '🃕',
-        '6c' => '🃖',
-        '7c' => '🃗',
-        '8c' => '🃘',
-        '9c' => '🃙',
-        'Tc' => '🃙',
-        'Jc' => '🃛',
-        'Qc' => '🃝',
-        'Kc' => '🃞',
-        'Ac' => '🃑',
-        '2d' => '🃂',
-        '3d' => '🃃',
-        '4d' => '🃄',
-        '5d' => '🃅',
-        '6d' => '🃆',
-        '7d' => '🃇',
-        '8d' => '🃈',
-        '9d' => '🃈',
-        'Td' => '🃊',
-        'Jd' => '🃋',
-        'Qd' => '🃍',
-        'Kd' => '🃁',
-        '2h' => '🂲',
-        '3h' => '🂳',
-        '4h' => '🂴',
-        '5h' => '🂵',
-        '6h' => '🂶',
-        '7h' => '🂷',
-        '8h' => '🂸',
-        '9h' => '🂹',
-        'Th' => '🂺',
-        'Jh' => '🂻',
-        'Qh' => '🂽',
-        'Kh' => '🂾',
-        'Ah' => '🂱',
-        '2s' => '🂢',
-        '3s' => '🂣',
-        '4s' => '🂤',
-        '5s' => '🂥',
-        '6s' => '🂦',
-        '7s' => '🂧',
-        '8s' => '🂨',
-        '9s' => '🂩',
-        'Ts' => '🂪',
-        'Js' => '🂫',
-        'Qs' => '🂭',
-        'Ks' => '🂮',
-        'As' => '🂡',
-        'wb' => '🃏',
-        'wr' => '🂿',
-    ];
-
-    public function __construct(private readonly Rank $rank, private readonly Suit $suit)
+    public function __construct(private Rank $rank, private Suit $suit)
     {
     }
 
@@ -70,7 +14,7 @@ final class Card implements \Stringable
     {
         [$value, $suit] = \str_split($rankSuit);
 
-        return new self(new Rank($value), new Suit($suit));
+        return new self(Rank::from($value), Suit::from($suit));
     }
 
     /**
@@ -78,17 +22,20 @@ final class Card implements \Stringable
      */
     public static function getDeck(bool $shuffle = false, int $num = 1, bool $allowJokers = false): array
     {
+        $regularSuits = [Suit::Clubs, Suit::Diamonds, Suit::Hearts, Suit::Spades];
+        $regularRanks = \array_filter(Rank::cases(), static fn (Rank $r): bool => Rank::Joker !== $r);
+
         $deck = [];
         for ($i = 1; $i <= $num; ++$i) {
-            foreach (Suit::$suits as $seed => $seedSymbol) {
-                foreach (Rank::$ranks as $value => $int) {
-                    $deck[] = new self(new Rank((string) $value), new Suit($seed));
+            foreach ($regularSuits as $suit) {
+                foreach ($regularRanks as $rank) {
+                    $deck[] = new self($rank, $suit);
                 }
             }
         }
         if ($allowJokers) {
-            $deck[] = self::fromRankSuit('wb');
-            $deck[] = self::fromRankSuit('wr');
+            $deck[] = new self(Rank::Joker, Suit::BlackJoker);
+            $deck[] = new self(Rank::Joker, Suit::RedJoker);
         }
         if ($shuffle) {
             return (new Randomizer())->shuffleArray($deck);
@@ -99,7 +46,7 @@ final class Card implements \Stringable
 
     public function __toString(): string
     {
-        return $this->rank.$this->suit;
+        return $this->rank->value.$this->suit->value;
     }
 
     public function toText(): string
@@ -109,12 +56,12 @@ final class Card implements \Stringable
 
     public function toHtml(string $template = '<span id="%s" class="crd crd-%s st-%s">%s%s</span>'): string
     {
-        return \sprintf($template, $this->rank.$this->suit, $this->rank, $this->suit, $this->rank->toText(), $this->suit->toText());
+        return \sprintf($template, $this->rank->value.$this->suit->value, $this->rank->value, $this->suit->value, $this->rank->toText(), $this->suit->toText());
     }
 
     public function toUnicode(): string
     {
-        return self::CODES[$this->rank.$this->suit];
+        return CardCode::from($this->rank->value.$this->suit->value)->unicode();
     }
 
     public function getSuit(): Suit

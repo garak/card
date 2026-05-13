@@ -75,7 +75,7 @@ final class HandTest extends TestCase
     public function getRandomCardWithSuit(): void
     {
         $hand = HandStub::createFromString('6s,4h', false);
-        $card = $hand->getRandomCard(new Suit('s'));
+        $card = $hand->getRandomCard(Suit::Spades);
         self::assertEquals('6s', (string) $card);
     }
 
@@ -96,13 +96,13 @@ final class HandTest extends TestCase
         $hand = HandStub::createFromString('6s,4h,3s', false);
         $hand->sort(null);
         $hand->sort(null);
-        $hand->sort(new Suit('s'));
-        $hand->sort(new Suit('s'));
+        $hand->sort(Suit::Spades);
+        $hand->sort(Suit::Spades);
         self::assertEquals('6s,4h,3s', (string) $hand); // dummy sort, does nothing
     }
 
     private static function getCheck(): \Closure
     {
-        return \Closure::fromCallable(static fn (array $cards): bool => 13 === \count($cards));
+        return static fn (array $cards): bool => 13 === \count($cards);
     }
 }
