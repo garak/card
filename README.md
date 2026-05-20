@@ -16,6 +16,7 @@ This library offers a few VO classes to use inside Card-related applications:
 * `Card`: represents a Card, for example an ace of spades.
 * `Rank`: represents the rank value of a Card, for example "A" or "7" ("T" is used for 10, to keep the same length).
 * `Suit`: represents the card suit, for example spades or diamonds.
+* `CardBack`: represents the back color of a card, for example red or blue. This allows distinguishing between multiple decks in games played with more than one deck.
 
 Some more classes, more elaborate, are available. They are abstract, and thus require a custom implementation to extend them:
 
@@ -62,6 +63,48 @@ use Garak\Card\Card;
 $orderedCards = Card::getDeck();
 $shuffledCards = Card::getDeck(shuffle: true);
 $doubleDeckWithJokers = Card::getDeck(shuffle: true, num: 2, allowJokers: true);
+```
+
+### Multiple Decks
+
+When playing with multiple decks, cards can be distinguished by their back color.
+Each deck automatically gets a back color, cycling through the available values if you request more decks than backs:
+
+```php
+<?php
+
+require 'vendor/autoload.php';
+
+use Garak\Card\Card;
+use Garak\Card\CardBack;
+use Garak\Card\Rank;
+use Garak\Card\Suit;
+
+// Single deck - cards have no back (backward compatible)
+$singleDeck = Card::getDeck();
+$card = $singleDeck[0];
+$card->getBack(); // returns null
+
+// Multiple decks - cards have different backs
+$twoDecks = Card::getDeck(num: 2);
+// First 52 cards have red back, next 52 have blue back
+
+// Requesting more than two decks reuses the available backs in order
+$threeDecks = Card::getDeck(num: 3);
+// The third deck uses the red back again
+
+// Cards with same face but different backs are not equal
+$redAceOfSpades = new Card(Rank::Ace, Suit::Spades, CardBack::Red);
+$blueAceOfSpades = new Card(Rank::Ace, Suit::Spades, CardBack::Blue);
+$redAceOfSpades->isEqual($blueAceOfSpades); // false
+$redAceOfSpades->isSameFace($blueAceOfSpades); // true
+
+// Cards with/without back are different when one side has a back,
+// but you can still compare just the face when needed.
+$noBackAceOfSpades = new Card(Rank::Ace, Suit::Spades);
+$noBackAceOfSpades->isEqual($redAceOfSpades); // false
+$noBackAceOfSpades->isSameFace($redAceOfSpades); // true
+$noBackAceOfSpades->getBack(); // returns null
 ```
 
 ## Upgrading from version 0.8

@@ -24,6 +24,7 @@ enum Rank: string
         return $this->value;
     }
 
+    #[\Deprecated('Call $rank->value directly')]
     public function getValue(): string
     {
         return $this->value;

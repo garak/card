@@ -106,16 +106,8 @@ abstract class Hand implements \Stringable
 
     public function play(Card $card, ?callable $sort = null): static
     {
-        $played = null;
-        foreach ($this->cards as $key => $cardInHand) {
-            if ($card->isEqual($cardInHand)) {
-                $played = $key;
-                break;
-            }
-        }
-        if (null === $played) {
-            throw new \InvalidArgumentException(\sprintf('Card %s not present in hand (%s).', $card, $this));
-        }
+        $played = \array_find_key($this->cards, static fn (Card $c): bool => $card->isEqual($c))
+            ?? throw new \InvalidArgumentException(\sprintf('Card %s not present in hand (%s).', $card, $this));
         $cards = $this->cards;
         unset($cards[$played]);
 
