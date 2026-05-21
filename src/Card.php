@@ -6,8 +6,11 @@ use Random\Randomizer;
 
 final readonly class Card implements \Stringable
 {
-    public function __construct(private Rank $rank, private Suit $suit)
-    {
+    public function __construct(
+        private Rank $rank,
+        private Suit $suit,
+        private ?CardBack $back = null
+    ) {
     }
 
     public static function fromRankSuit(string $rankSuit): self
@@ -25,17 +28,19 @@ final readonly class Card implements \Stringable
         $regularSuits = [Suit::Clubs, Suit::Diamonds, Suit::Hearts, Suit::Spades];
         $regularRanks = \array_filter(Rank::cases(), static fn (Rank $r): bool => Rank::Joker !== $r);
 
+        $backs = CardBack::cases();
         $deck = [];
         for ($i = 1; $i <= $num; ++$i) {
+            $back = $num > 1 ? $backs[($i - 1) % \count($backs)] : null;
             foreach ($regularSuits as $suit) {
                 foreach ($regularRanks as $rank) {
-                    $deck[] = new self($rank, $suit);
+                    $deck[] = new self($rank, $suit, $back);
                 }
             }
-        }
-        if ($allowJokers) {
-            $deck[] = new self(Rank::Joker, Suit::BlackJoker);
-            $deck[] = new self(Rank::Joker, Suit::RedJoker);
+            if ($allowJokers) {
+                $deck[] = new self(Rank::Joker, Suit::BlackJoker, $back);
+                $deck[] = new self(Rank::Joker, Suit::RedJoker, $back);
+            }
         }
         if ($shuffle) {
             return (new Randomizer())->shuffleArray($deck);
@@ -74,8 +79,22 @@ final readonly class Card implements \Stringable
         return $this->rank;
     }
 
-    public function isEqual(self $card): bool
+    public function getBack(): ?CardBack
+    {
+        return $this->back;
+    }
+
+    public function isSameFace(self $card): bool
     {
         return $this->suit->isEqual($card->suit) && $this->rank->isEqual($card->rank);
+    }
+
+    public function isEqual(self $card): bool
+    {
+        if (null === $this->back || null === $card->back) {
+            return null === $this->back && null === $card->back && $this->isSameFace($card);
+        }
+
+        return $this->isSameFace($card) && $this->back->isEqual($card->back);
     }
 }

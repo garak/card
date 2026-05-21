@@ -3,6 +3,7 @@
 namespace Garak\Card\Test;
 
 use Garak\Card\Suit;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -15,8 +16,30 @@ final class SuitTest extends TestCase
     }
 
     #[Test]
+    #[Group('legacy')]
+    public function getName(): void
+    {
+        self::assertSame('d', Suit::Diamonds->getName());
+    }
+
+    #[Test]
     public function toUnicode(): void
     {
         self::assertEquals('♦️', Suit::Diamonds->toUnicode());
+    }
+
+    #[Test]
+    public function toUnicodeForJokersIsNotSupported(): void
+    {
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Suit b has no unicode representation.');
+        Suit::BlackJoker->toUnicode();
+    }
+
+    #[Test]
+    public function getIntForJokers(): void
+    {
+        self::assertSame(-1, Suit::BlackJoker->getInt());
+        self::assertSame(-1, Suit::RedJoker->getInt());
     }
 }

@@ -3,6 +3,8 @@
 namespace Garak\Card\Test;
 
 use Garak\Card\Card;
+use Garak\Card\CardBack;
+use Garak\Card\Rank;
 use Garak\Card\Suit;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -61,6 +63,25 @@ final class HandTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Card 5d not present in hand (6s,4h,3s,Td,6c,3d,3h,Kc,Qc,Tc,7d,2c,6d).');
         $hand->play(Card::fromRankSuit('5d'));
+    }
+
+    #[Test]
+    public function canPlayCardWithMatchingBack(): void
+    {
+        $hand = new HandStub([new Card(Rank::Ace, Suit::Spades, CardBack::Red)], false);
+        $played = $hand->play(new Card(Rank::Ace, Suit::Spades, CardBack::Red));
+
+        self::assertTrue($played->isEmpty());
+    }
+
+    #[Test]
+    public function cannotPlayCardWithDifferentBack(): void
+    {
+        $hand = new HandStub([new Card(Rank::Ace, Suit::Spades, CardBack::Red)], false);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Card As not present in hand (As).');
+        $hand->play(new Card(Rank::Ace, Suit::Spades, CardBack::Blue));
     }
 
     #[Test]

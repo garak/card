@@ -16,6 +16,12 @@ enum Suit: string
         return $this->getSymbol();
     }
 
+    #[\Deprecated('Call $suit->value directly')]
+    public function getName(): string
+    {
+        return $this->value;
+    }
+
     public function toUnicode(): string
     {
         return match ($this) {
@@ -25,11 +31,6 @@ enum Suit: string
             self::Spades => '♠️',
             default => throw new \LogicException(\sprintf('Suit %s has no unicode representation.', $this->value)),
         };
-    }
-
-    public function getName(): string
-    {
-        return $this->value;
     }
 
     public function getSymbol(): string
