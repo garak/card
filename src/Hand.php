@@ -7,7 +7,7 @@ namespace Garak\Card;
  * You must extend this class, and pass to constructor your anonymous functions to check starting
  * hand and to sort it.
  */
-abstract class Hand implements \Stringable
+abstract class Hand implements \Countable, \Stringable
 {
     /** @var array<int|string, Card> */
     protected array $cards;
@@ -55,7 +55,16 @@ abstract class Hand implements \Stringable
 
     public function __toString(): string
     {
-        return \implode(',', $this->cards);
+        return $this->toString();
+    }
+
+    /**
+     * String representation, parsable by createFromString().
+     * Backs (if any) are included only when explicitly requested.
+     */
+    public function toString(bool $withBack = false): string
+    {
+        return \implode(',', \array_map(static fn (Card $card): string => $card->toString($withBack), $this->cards));
     }
 
     public function toText(?Suit $trump = null): string
@@ -101,7 +110,24 @@ abstract class Hand implements \Stringable
 
     public static function isValid(string $cards): bool
     {
-        return 2 === \strlen($cards) || \strpos($cards, ',') > 0;
+        return \in_array(\strlen($cards), [2, 3], true) || \strpos($cards, ',') > 0;
+    }
+
+    public function has(Card $card): bool
+    {
+        return \array_any($this->cards, static fn (Card $c): bool => $card->isEqual($c));
+    }
+
+    /**
+     * Returns a new hand with the given card added.
+     * The sorting callback of the current hand is kept unless overridden.
+     */
+    public function add(Card $card, ?callable $sort = null): static
+    {
+        $cards = $this->cards;
+        $cards[] = $card;
+
+        return new static($cards, false, null, $sort ?? $this->sorting);
     }
 
     public function play(Card $card, ?callable $sort = null): static
@@ -111,12 +137,17 @@ abstract class Hand implements \Stringable
         $cards = $this->cards;
         unset($cards[$played]);
 
-        return new static($cards, false, null, $sort);
+        return new static($cards, false, null, $sort ?? $this->sorting);
     }
 
     public function isEmpty(): bool
     {
-        return 0 === \count($this->cards);
+        return 0 === $this->count();
+    }
+
+    public function count(): int
+    {
+        return \count($this->cards);
     }
 
     public function sort(?Suit $trump): void

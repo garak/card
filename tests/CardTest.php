@@ -27,6 +27,44 @@ final class CardTest extends TestCase
     }
 
     #[Test]
+    public function constructFromStringWithBack(): void
+    {
+        $card = Card::fromRankSuit('Asr');
+        self::assertEquals(Rank::Ace, $card->getRank());
+        self::assertEquals(Suit::Spades, $card->getSuit());
+        self::assertEquals(CardBack::Red, $card->getBack());
+    }
+
+    #[Test]
+    public function constructFromStringWithoutBackHasNullBack(): void
+    {
+        self::assertNull(Card::fromRankSuit('As')->getBack());
+    }
+
+    #[Test]
+    public function constructFromStringRejectsTooShortString(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid card string "A": expected 2 or 3 characters.');
+        Card::fromRankSuit('A');
+    }
+
+    #[Test]
+    public function constructFromStringRejectsTooLongString(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid card string "Asrb": expected 2 or 3 characters.');
+        Card::fromRankSuit('Asrb');
+    }
+
+    #[Test]
+    public function constructFromStringRejectsUnknownBack(): void
+    {
+        $this->expectException(\ValueError::class);
+        Card::fromRankSuit('Asx');
+    }
+
+    #[Test]
     public function getDeck(): void
     {
         self::assertNotEmpty(Card::getDeck());
@@ -41,6 +79,37 @@ final class CardTest extends TestCase
     {
         $card = new Card(Rank::Five, Suit::Clubs);
         self::assertEquals('5c', (string) $card);
+    }
+
+    #[Test]
+    public function toStringDropsBackByDefault(): void
+    {
+        $card = new Card(Rank::Ace, Suit::Spades, CardBack::Red);
+        self::assertEquals('As', (string) $card);
+        self::assertEquals('As', $card->toString());
+    }
+
+    #[Test]
+    public function toStringWithBack(): void
+    {
+        $card = new Card(Rank::Ace, Suit::Spades, CardBack::Blue);
+        self::assertEquals('Asb', $card->toString(true));
+    }
+
+    #[Test]
+    public function toStringWithBackOnCardWithoutBack(): void
+    {
+        $card = new Card(Rank::Ace, Suit::Spades);
+        self::assertEquals('As', $card->toString(true));
+    }
+
+    #[Test]
+    public function stringRoundTripKeepsBack(): void
+    {
+        $card = new Card(Rank::Ten, Suit::Hearts, CardBack::Red);
+        $parsed = Card::fromRankSuit($card->toString(true));
+        self::assertTrue($card->isEqual($parsed));
+        self::assertEquals(CardBack::Red, $parsed->getBack());
     }
 
     #[Test]

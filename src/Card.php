@@ -13,11 +13,19 @@ final readonly class Card implements \Stringable
     ) {
     }
 
+    /**
+     * Accepts a 2-char string (rank and suit, e.g. "As") or a 3-char string
+     * with a trailing back (e.g. "Asr" for an ace of spades with red back).
+     */
     public static function fromRankSuit(string $rankSuit): self
     {
-        [$value, $suit] = \str_split($rankSuit);
+        $length = \strlen($rankSuit);
+        if ($length < 2 || $length > 3) {
+            throw new \InvalidArgumentException(\sprintf('Invalid card string "%s": expected 2 or 3 characters.', $rankSuit));
+        }
+        $back = 3 === $length ? CardBack::fromText($rankSuit[2]) : null;
 
-        return new self(Rank::from($value), Suit::from($suit));
+        return new self(Rank::from($rankSuit[0]), Suit::from($rankSuit[1]), $back);
     }
 
     /**
@@ -51,7 +59,21 @@ final readonly class Card implements \Stringable
 
     public function __toString(): string
     {
-        return $this->rank->value.$this->suit->value;
+        return $this->toString();
+    }
+
+    /**
+     * String representation, parsable by fromRankSuit().
+     * The back (if any) is included only when explicitly requested.
+     */
+    public function toString(bool $withBack = false): string
+    {
+        $string = $this->rank->value.$this->suit->value;
+        if ($withBack && null !== $this->back) {
+            $string .= $this->back->toText();
+        }
+
+        return $string;
     }
 
     public function toText(): string
