@@ -17,6 +17,7 @@ This library offers a few VO classes to use inside Card-related applications:
 * `Rank`: represents the rank value of a Card, for example "A" or "7" ("T" is used for 10, to keep the same length).
 * `Suit`: represents the card suit, for example spades or diamonds.
 * `CardBack`: represents the back color of a card, for example red or blue. This allows distinguishing between multiple decks in games played with more than one deck.
+   Its `toText()`/`fromText()` methods map a back to a single character ("r" or "b"), used in string serialization.
 
 Some more classes, more elaborate, are available. They are abstract, and thus require a custom implementation to extend them:
 
@@ -105,6 +106,31 @@ $noBackAceOfSpades = new Card(Rank::Ace, Suit::Spades);
 $noBackAceOfSpades->isEqual($redAceOfSpades); // false
 $noBackAceOfSpades->isSameFace($redAceOfSpades); // true
 $noBackAceOfSpades->getBack(); // returns null
+```
+
+### Serializing cards with backs
+
+A card string can carry the back as an optional third character (`r` for red, `b` for blue).
+The default string form drops the back, to stay compatible with existing persisted data.
+Use `toString(withBack: true)` when the back must survive a round-trip:
+
+```php
+<?php
+
+require 'vendor/autoload.php';
+
+use Garak\Card\Card;
+
+$card = Card::fromRankSuit('Asr');
+$card->getBack(); // CardBack::Red
+
+echo $card;                           // will output "As"
+echo $card->toString(withBack: true); // will output "Asr"
+
+// The same applies to hands
+$hand = MyHand::createFromString('Asr,Kdb');
+echo $hand;                           // will output "As,Kd"
+echo $hand->toString(withBack: true); // will output "Asr,Kdb"
 ```
 
 ## Upgrading from version 0.8
