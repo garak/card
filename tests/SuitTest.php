@@ -23,6 +23,30 @@ final class SuitTest extends TestCase
     }
 
     #[Test]
+    public function toText(): void
+    {
+        self::assertSame('♣', Suit::Clubs->toText());
+        self::assertSame('♦', Suit::Diamonds->toText());
+        self::assertSame('♥', Suit::Hearts->toText());
+        self::assertSame('♠', Suit::Spades->toText());
+    }
+
+    #[Test]
+    public function toTextForJokersUsesValue(): void
+    {
+        self::assertSame('b', Suit::BlackJoker->toText());
+        self::assertSame('r', Suit::RedJoker->toText());
+    }
+
+    #[Test]
+    public function getSymbolForJokersIsNotSupported(): void
+    {
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Suit r has no symbol.');
+        Suit::RedJoker->getSymbol();
+    }
+
+    #[Test]
     public function toUnicode(): void
     {
         self::assertEquals('♦️', Suit::Diamonds->toUnicode());

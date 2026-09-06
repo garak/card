@@ -120,14 +120,13 @@ abstract class Hand implements \Countable, \Stringable
 
     /**
      * Returns a new hand with the given card added.
-     * The sorting callback of the current hand is kept unless overridden.
      */
     public function add(Card $card, ?callable $sort = null): static
     {
         $cards = $this->cards;
         $cards[] = $card;
 
-        return new static($cards, false, null, $sort ?? $this->sorting);
+        return new static($cards, false, null, $sort);
     }
 
     public function play(Card $card, ?callable $sort = null): static
@@ -137,7 +136,7 @@ abstract class Hand implements \Countable, \Stringable
         $cards = $this->cards;
         unset($cards[$played]);
 
-        return new static($cards, false, null, $sort ?? $this->sorting);
+        return new static($cards, false, null, $sort);
     }
 
     public function isEmpty(): bool

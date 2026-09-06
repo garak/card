@@ -120,6 +120,13 @@ final class CardTest extends TestCase
     }
 
     #[Test]
+    public function toTextForJokers(): void
+    {
+        self::assertEquals('wb', (new Card(Rank::Joker, Suit::BlackJoker))->toText());
+        self::assertEquals('wr', (new Card(Rank::Joker, Suit::RedJoker))->toText());
+    }
+
+    #[Test]
     public function toHtml(): void
     {
         $card = new Card(Rank::King, Suit::Hearts);

@@ -108,6 +108,26 @@ $noBackAceOfSpades->isSameFace($redAceOfSpades); // true
 $noBackAceOfSpades->getBack(); // returns null
 ```
 
+### Jokers
+
+Jokers are regular cards with rank `Rank::Joker` and suit `Suit::BlackJoker` or `Suit::RedJoker`.
+They have no suit symbol, so `toText()` falls back to the raw value:
+
+```php
+<?php
+
+require 'vendor/autoload.php';
+
+use Garak\Card\Card;
+use Garak\Card\Rank;
+use Garak\Card\Suit;
+
+$joker = new Card(Rank::Joker, Suit::BlackJoker);
+echo $joker;              // will output "wb"
+echo $joker->toText();    // will output "wb"
+echo $joker->toUnicode(); // will output "🃏"
+```
+
 ### Serializing cards with backs
 
 A card string can carry the back as an optional third character (`r` for red, `b` for blue).
@@ -132,6 +152,46 @@ $hand = MyHand::createFromString('Asr,Kdb');
 echo $hand;                           // will output "As,Kd"
 echo $hand->toString(withBack: true); // will output "Asr,Kdb"
 ```
+
+### Piles
+
+A `Pile` is an ordered stack of cards, like a stock, a discard pile, or a dealing shoe.
+The last card is the top of the pile.
+Unlike `Hand`, a `Pile` is mutable: adding and drawing change it in place.
+
+```php
+<?php
+
+require 'vendor/autoload.php';
+
+use Garak\Card\Card;
+use Garak\Card\Pile;
+
+$stock = new Pile(Card::getDeck());
+$stock->shuffle();
+$card = $stock->draw();   // removes and returns the top card
+$stock->top();            // peeks at the new top card, or null when empty
+count($stock);            // 51
+
+$discard = Pile::createFromString('2c,Kd'); // bottom to top
+$discard->add($card);     // the added card is now on top
+echo $discard;            // will output "2c,Kd,As" (for an ace of spades)
+$discard->has(Card::fromRankSuit('Kd')); // true
+
+$cards = $discard->takeAll(); // returns all cards, bottom to top, and empties the pile
+```
+
+Like `Hand`, `toString(withBack: true)` keeps the backs of the cards.
+
+## Upgrading from version 0.11
+
+`Hand::add()` and `Hand::play()` no longer pass the current hand's sorting callback to the new hand.
+Your constructor is called with `null` for `$sorting` and must provide the default sorter itself.
+This was needed because a sorter defined as a closure bound to `$this` kept sorting the old hand instead of the new one.
+Pass a callback explicitly as the second argument if you need a different sorter for the new hand.
+
+`Suit::toText()` and `Card::toText()` no longer throw a `LogicException` for jokers.
+They return the raw value instead (e.g. `wb` for the black joker).
 
 ## Upgrading from version 0.8
 

@@ -151,7 +151,7 @@ final class HandTest extends TestCase
     }
 
     #[Test]
-    public function addCardKeepsSorting(): void
+    public function addCardDoesNotKeepSorting(): void
     {
         $calls = 0;
         $sort = static function () use (&$calls): void { ++$calls; };
@@ -160,7 +160,7 @@ final class HandTest extends TestCase
         $added = $hand->add(Card::fromRankSuit('3s'));
         $added->sort(null);
 
-        self::assertSame(1, $calls);
+        self::assertSame(0, $calls);
     }
 
     #[Test]
@@ -178,7 +178,7 @@ final class HandTest extends TestCase
     }
 
     #[Test]
-    public function playCardKeepsSorting(): void
+    public function playCardDoesNotKeepSorting(): void
     {
         $calls = 0;
         $sort = static function () use (&$calls): void { ++$calls; };
@@ -187,7 +187,21 @@ final class HandTest extends TestCase
         $played = $hand->play(Card::fromRankSuit('6s'));
         $played->sort(null);
 
-        self::assertSame(1, $calls);
+        self::assertSame(0, $calls);
+    }
+
+    #[Test]
+    public function playCardWithSortingOverride(): void
+    {
+        $original = 0;
+        $override = 0;
+        $hand = HandStub::createFromString('6s,4h', false, null, static function () use (&$original): void { ++$original; });
+
+        $played = $hand->play(Card::fromRankSuit('6s'), static function () use (&$override): void { ++$override; });
+        $played->sort(null);
+
+        self::assertSame(0, $original);
+        self::assertSame(1, $override);
     }
 
     #[Test]
