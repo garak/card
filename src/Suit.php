@@ -13,7 +13,10 @@ enum Suit: string
 
     public function toText(): string
     {
-        return $this->getSymbol();
+        return match ($this) {
+            self::BlackJoker, self::RedJoker => $this->value,
+            default => $this->getSymbol(),
+        };
     }
 
     #[\Deprecated('Call $suit->value directly')]
