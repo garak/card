@@ -4,6 +4,7 @@ namespace Garak\Card\Test;
 
 use Garak\Card\Card;
 use Garak\Card\CardBack;
+use Garak\Card\Cards;
 use Garak\Card\Rank;
 use Garak\Card\Suit;
 use PHPUnit\Framework\Attributes\Test;
@@ -245,5 +246,85 @@ final class HandTest extends TestCase
     private static function getCheck(): \Closure
     {
         return static fn (array $cards): bool => 13 === \count($cards);
+    }
+
+    #[Test]
+    public function addManyCards(): void
+    {
+        $hand = HandStub::createFromString('6s,4h', false);
+        $added = $hand->addMany([Card::fromRankSuit('3s'), Card::fromRankSuit('2c')]);
+
+        self::assertEquals('6s,4h,3s,2c', (string) $added);
+        self::assertEquals('6s,4h', (string) $hand);
+    }
+
+    #[Test]
+    public function addKeepsKeys(): void
+    {
+        $hand = new HandStub(['x' => Card::fromRankSuit('6s'), 'y' => Card::fromRankSuit('4h')], false);
+        $added = $hand->add(Card::fromRankSuit('3s'));
+
+        self::assertSame(['x', 'y', 0], \array_keys($added->getCards()));
+    }
+
+    #[Test]
+    public function playManyCards(): void
+    {
+        $hand = HandStub::createFromString('6s,4h,3s', false);
+        $played = $hand->playMany([Card::fromRankSuit('6s'), Card::fromRankSuit('3s')]);
+
+        self::assertEquals('4h', (string) $played);
+        self::assertEquals('6s,4h,3s', (string) $hand);
+    }
+
+    #[Test]
+    public function cannotPlayManyWithACardNotInHand(): void
+    {
+        $hand = HandStub::createFromString('6s,4h', false);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Card 5d not present in hand (6s,4h).');
+        $hand->playMany([Card::fromRankSuit('6s'), Card::fromRankSuit('5d')]);
+    }
+
+    #[Test]
+    public function playKeepsKeys(): void
+    {
+        $hand = HandStub::createFromString('6s,4h,3s', false);
+        $played = $hand->play(Card::fromRankSuit('6s'));
+
+        self::assertSame([1, 2], \array_keys($played->getCards()));
+        self::assertEquals('4h', (string) $played->getCards()[1]);
+    }
+
+    #[Test]
+    public function faceLookups(): void
+    {
+        $hand = HandStub::createFromString('Asr,Asb,Kd', false);
+
+        self::assertFalse($hand->has(Card::fromRankSuit('As')));
+        self::assertTrue($hand->hasFace(Card::fromRankSuit('As')));
+        self::assertSame(2, $hand->countFace(Card::fromRankSuit('As')));
+        self::assertSame(0, $hand->countFace(Card::fromRankSuit('2c')));
+        self::assertTrue($hand->hasSuit(Suit::Diamonds));
+        self::assertFalse($hand->hasSuit(Suit::Clubs));
+    }
+
+    #[Test]
+    public function toCards(): void
+    {
+        $hand = HandStub::createFromString('Asr,Kd', false);
+        $cards = $hand->toCards();
+
+        self::assertInstanceOf(Cards::class, $cards);
+        self::assertSame('Asr,Kd', $cards->toString(true));
+    }
+
+    #[Test]
+    public function hiddenString(): void
+    {
+        $hand = HandStub::createFromString('Asr,Kd', false);
+
+        self::assertSame('??r,??', $hand->toHiddenString());
     }
 }

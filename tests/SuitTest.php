@@ -2,6 +2,7 @@
 
 namespace Garak\Card\Test;
 
+use Garak\Card\Color;
 use Garak\Card\Suit;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -65,5 +66,31 @@ final class SuitTest extends TestCase
     {
         self::assertSame(-1, Suit::BlackJoker->getInt());
         self::assertSame(-1, Suit::RedJoker->getInt());
+    }
+
+    #[Test]
+    public function isJoker(): void
+    {
+        self::assertTrue(Suit::BlackJoker->isJoker());
+        self::assertTrue(Suit::RedJoker->isJoker());
+        self::assertFalse(Suit::Spades->isJoker());
+    }
+
+    #[Test]
+    public function regularAndJokers(): void
+    {
+        self::assertSame([Suit::Clubs, Suit::Diamonds, Suit::Hearts, Suit::Spades], Suit::regular());
+        self::assertSame([Suit::BlackJoker, Suit::RedJoker], Suit::jokers());
+    }
+
+    #[Test]
+    public function color(): void
+    {
+        self::assertSame(Color::Red, Suit::Hearts->getColor());
+        self::assertSame(Color::Red, Suit::Diamonds->getColor());
+        self::assertSame(Color::Red, Suit::RedJoker->getColor());
+        self::assertSame(Color::Black, Suit::Clubs->getColor());
+        self::assertSame(Color::Black, Suit::Spades->getColor());
+        self::assertSame(Color::Black, Suit::BlackJoker->getColor());
     }
 }

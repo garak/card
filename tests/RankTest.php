@@ -23,4 +23,22 @@ final class RankTest extends TestCase
         $rank = Rank::Jack;
         self::assertSame('J', $rank->getValue());
     }
+
+    #[Test]
+    public function isJoker(): void
+    {
+        self::assertTrue(Rank::Joker->isJoker());
+        self::assertFalse(Rank::Ace->isJoker());
+    }
+
+    #[Test]
+    public function regular(): void
+    {
+        $regular = Rank::regular();
+
+        self::assertCount(13, $regular);
+        self::assertSame(Rank::Two, $regular[0]);
+        self::assertSame(Rank::Ace, $regular[12]);
+        self::assertNotContains(Rank::Joker, $regular);
+    }
 }

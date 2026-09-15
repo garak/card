@@ -30,6 +30,10 @@ enum Rank: string
         return $this->value;
     }
 
+    /**
+     * @deprecated use CardValues::aceHigh()->ofRank() for the same numbers, or a RankOrder to compare ranks
+     */
+    #[\Deprecated('Use CardValues::aceHigh()->ofRank() for the same numbers, or a RankOrder to compare ranks')]
     public function getInt(): int
     {
         return [
@@ -48,6 +52,21 @@ enum Rank: string
             'A' => 14,
             'w' => -1,
         ][$this->value];
+    }
+
+    public function isJoker(): bool
+    {
+        return self::Joker === $this;
+    }
+
+    /**
+     * The thirteen regular ranks, from two to ace.
+     *
+     * @return list<self>
+     */
+    public static function regular(): array
+    {
+        return \array_values(\array_filter(self::cases(), static fn (self $rank): bool => !$rank->isJoker()));
     }
 
     public function isEqual(self $rank): bool

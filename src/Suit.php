@@ -47,6 +47,10 @@ enum Suit: string
         };
     }
 
+    /**
+     * @deprecated use a SuitOrder to compare suits
+     */
+    #[\Deprecated('Use a SuitOrder to compare suits')]
     public function getInt(): int
     {
         return match ($this) {
@@ -56,6 +60,39 @@ enum Suit: string
             self::Spades => 8,
             self::BlackJoker, self::RedJoker => -1,
         };
+    }
+
+    public function getColor(): Color
+    {
+        return match ($this) {
+            self::Diamonds, self::Hearts, self::RedJoker => Color::Red,
+            self::Clubs, self::Spades, self::BlackJoker => Color::Black,
+        };
+    }
+
+    public function isJoker(): bool
+    {
+        return self::BlackJoker === $this || self::RedJoker === $this;
+    }
+
+    /**
+     * The four regular suits: clubs, diamonds, hearts, spades.
+     *
+     * @return list<self>
+     */
+    public static function regular(): array
+    {
+        return [self::Clubs, self::Diamonds, self::Hearts, self::Spades];
+    }
+
+    /**
+     * The two joker suits: black and red.
+     *
+     * @return list<self>
+     */
+    public static function jokers(): array
+    {
+        return [self::BlackJoker, self::RedJoker];
     }
 
     public function isEqual(self $suit): bool
