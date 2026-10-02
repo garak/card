@@ -6,6 +6,11 @@ use Random\Randomizer;
 
 final readonly class Card implements \Stringable
 {
+    /**
+     * Placeholder for the rank and suit of a card seen from its back, see toHiddenString().
+     */
+    public const HIDDEN = '??';
+
     public function __construct(
         private Rank $rank,
         private Suit $suit,
@@ -29,32 +34,17 @@ final readonly class Card implements \Stringable
     }
 
     /**
+     * Shortcut for the most common decks. See Deck for stripped decks, a given number of jokers, or custom backs.
+     *
+     * @param Randomizer|null $randomizer pass a seeded one for a reproducible shuffle
+     *
      * @return array|self[]
      */
-    public static function getDeck(bool $shuffle = false, int $num = 1, bool $allowJokers = false): array
+    public static function getDeck(bool $shuffle = false, int $num = 1, bool $allowJokers = false, ?Randomizer $randomizer = null): array
     {
-        $regularSuits = [Suit::Clubs, Suit::Diamonds, Suit::Hearts, Suit::Spades];
-        $regularRanks = \array_filter(Rank::cases(), static fn (Rank $r): bool => Rank::Joker !== $r);
+        $deck = new Deck(copies: $num, jokers: $allowJokers ? 2 * $num : 0);
 
-        $backs = CardBack::cases();
-        $deck = [];
-        for ($i = 1; $i <= $num; ++$i) {
-            $back = $num > 1 ? $backs[($i - 1) % \count($backs)] : null;
-            foreach ($regularSuits as $suit) {
-                foreach ($regularRanks as $rank) {
-                    $deck[] = new self($rank, $suit, $back);
-                }
-            }
-            if ($allowJokers) {
-                $deck[] = new self(Rank::Joker, Suit::BlackJoker, $back);
-                $deck[] = new self(Rank::Joker, Suit::RedJoker, $back);
-            }
-        }
-        if ($shuffle) {
-            return (new Randomizer())->shuffleArray($deck);
-        }
-
-        return $deck;
+        return $shuffle ? $deck->shuffle($randomizer) : $deck->getCards();
     }
 
     public function __toString(): string
@@ -74,6 +64,15 @@ final readonly class Card implements \Stringable
         }
 
         return $string;
+    }
+
+    /**
+     * Representation of the card as seen from its back, e.g. for a card face down or in an opponent's hand:
+     * the rank and suit are replaced by "??", the back (if any) is kept (e.g. "??r").
+     */
+    public function toHiddenString(): string
+    {
+        return self::HIDDEN.($this->back?->toText() ?? '');
     }
 
     public function toText(): string
@@ -104,6 +103,16 @@ final readonly class Card implements \Stringable
     public function getBack(): ?CardBack
     {
         return $this->back;
+    }
+
+    public function getColor(): Color
+    {
+        return $this->suit->getColor();
+    }
+
+    public function isJoker(): bool
+    {
+        return $this->rank->isJoker();
     }
 
     public function isSameFace(self $card): bool

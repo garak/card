@@ -4,10 +4,13 @@ namespace Garak\Card\Test;
 
 use Garak\Card\Card;
 use Garak\Card\CardBack;
+use Garak\Card\Color;
 use Garak\Card\Rank;
 use Garak\Card\Suit;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Random\Engine\Mt19937;
+use Random\Randomizer;
 
 final class CardTest extends TestCase
 {
@@ -236,5 +239,39 @@ final class CardTest extends TestCase
         $blueCards = \array_filter($deck, static fn (Card $card) => CardBack::Blue === $card->getBack());
         self::assertCount(54, $redCards);
         self::assertCount(54, $blueCards);
+    }
+
+    #[Test]
+    public function isJoker(): void
+    {
+        self::assertTrue(Card::fromRankSuit('wb')->isJoker());
+        self::assertFalse(Card::fromRankSuit('As')->isJoker());
+    }
+
+    #[Test]
+    public function color(): void
+    {
+        self::assertSame(Color::Red, Card::fromRankSuit('Ah')->getColor());
+        self::assertSame(Color::Black, Card::fromRankSuit('Ac')->getColor());
+        self::assertSame(Color::Red, Card::fromRankSuit('wr')->getColor());
+    }
+
+    #[Test]
+    public function hiddenString(): void
+    {
+        self::assertSame('??', Card::fromRankSuit('As')->toHiddenString());
+        self::assertSame('??r', Card::fromRankSuit('Asr')->toHiddenString());
+        self::assertSame('??b', (new Card(Rank::Ace, Suit::Spades, CardBack::Blue))->toHiddenString());
+    }
+
+    #[Test]
+    public function shuffledDeckIsReproducibleWithASeed(): void
+    {
+        $first = Card::getDeck(true, randomizer: new Randomizer(new Mt19937(42)));
+        $second = Card::getDeck(true, randomizer: new Randomizer(new Mt19937(42)));
+
+        self::assertCount(52, $first);
+        self::assertSame(\array_map('strval', $first), \array_map('strval', $second));
+        self::assertNotSame(\array_map('strval', $first), \array_map('strval', Card::getDeck()));
     }
 }

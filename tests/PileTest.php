@@ -9,6 +9,8 @@ use Garak\Card\Rank;
 use Garak\Card\Suit;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Random\Engine\Mt19937;
+use Random\Randomizer;
 
 final class PileTest extends TestCase
 {
@@ -185,5 +187,93 @@ final class PileTest extends TestCase
         $cards[] = Card::fromRankSuit('As');
 
         self::assertCount(2, $pile);
+    }
+
+    #[Test]
+    public function createFromTop(): void
+    {
+        $pile = Pile::createFromTop(['a' => Card::fromRankSuit('2c'), 'b' => Card::fromRankSuit('Kd'), 'c' => Card::fromRankSuit('As')]);
+
+        self::assertSame('As,Kd,2c', (string) $pile);
+        self::assertSame('2c', (string) $pile->draw());
+        self::assertSame('Kd', (string) $pile->draw());
+    }
+
+    #[Test]
+    public function drawMany(): void
+    {
+        $pile = Pile::createFromString('As,Kd,2c');
+        $drawn = $pile->drawMany(2);
+
+        self::assertSame('2c,Kd', \implode(',', \array_map('strval', $drawn)));
+        self::assertSame('As', (string) $pile);
+        self::assertSame([], $pile->drawMany(0));
+    }
+
+    #[Test]
+    public function cannotDrawMoreThanAvailable(): void
+    {
+        $pile = Pile::createFromString('As,Kd');
+
+        $this->expectException(\UnderflowException::class);
+        $this->expectExceptionMessage('Cannot draw 3 cards from a pile of 2.');
+        $pile->drawMany(3);
+    }
+
+    #[Test]
+    public function cannotDrawNegative(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        Pile::createFromString('As')->drawMany(-1);
+    }
+
+    #[Test]
+    public function peek(): void
+    {
+        $pile = Pile::createFromString('2c,Kd,As');
+
+        self::assertSame('As,Kd', \implode(',', \array_map('strval', $pile->peek(2))));
+        self::assertCount(3, $pile->peek(5));
+        self::assertSame([], $pile->peek(0));
+        self::assertSame([], (new Pile())->peek(2));
+        self::assertCount(3, $pile);
+    }
+
+    #[Test]
+    public function cannotPeekNegative(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        Pile::createFromString('As')->peek(-1);
+    }
+
+    #[Test]
+    public function shuffleIsReproducibleWithASeed(): void
+    {
+        $first = new Pile(Card::getDeck());
+        $second = new Pile(Card::getDeck());
+        $first->shuffle(new Randomizer(new Mt19937(42)));
+        $second->shuffle(new Randomizer(new Mt19937(42)));
+
+        self::assertSame((string) $first, (string) $second);
+        self::assertNotSame((string) $first, (string) new Pile(Card::getDeck()));
+    }
+
+    #[Test]
+    public function faceLookups(): void
+    {
+        $pile = Pile::createFromString('Asr,Asb,Kd');
+
+        self::assertFalse($pile->has(Card::fromRankSuit('As')));
+        self::assertTrue($pile->hasFace(Card::fromRankSuit('As')));
+        self::assertSame(2, $pile->countFace(Card::fromRankSuit('As')));
+    }
+
+    #[Test]
+    public function toCardsAndHiddenString(): void
+    {
+        $pile = Pile::createFromString('Asr,Kd');
+
+        self::assertSame('Asr,Kd', $pile->toCards()->toString(true));
+        self::assertSame('??r,??', $pile->toHiddenString());
     }
 }
