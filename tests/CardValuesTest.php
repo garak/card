@@ -110,6 +110,23 @@ final class CardValuesTest extends TestCase
     }
 
     #[Test]
+    public function withRankKeepsNumberRanks(): void
+    {
+        $low = CardValues::aceLow()->withRank(Rank::Joker, 30);
+        $high = CardValues::aceHigh()->withRank(Rank::Three, 10);
+
+        self::assertSame(2, $low->ofRank(Rank::Two));
+        self::assertSame(8, $low->ofRank(Rank::Eight));
+        self::assertSame(9, $low->ofRank(Rank::Nine));
+        self::assertSame(1, $low->ofRank(Rank::Ace));
+        self::assertSame(30, $low->ofRank(Rank::Joker));
+        self::assertSame(2, $high->ofRank(Rank::Two));
+        self::assertSame(10, $high->ofRank(Rank::Three));
+        self::assertSame(9, $high->ofRank(Rank::Nine));
+        self::assertSame(14, $high->ofRank(Rank::Ace));
+    }
+
+    #[Test]
     public function sum(): void
     {
         $cards = [Card::fromRankSuit('Ah'), Card::fromRankSuit('Kd'), Card::fromRankSuit('2c')];

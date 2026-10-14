@@ -100,7 +100,7 @@ final readonly class Deck implements \Countable
      */
     public function shuffle(?Randomizer $randomizer = null): array
     {
-        return \array_values(($randomizer ?? new Randomizer())->shuffleArray($this->getCards()));
+        return ($randomizer ?? new Randomizer())->shuffleArray($this->getCards());
     }
 
     /**
