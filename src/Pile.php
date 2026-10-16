@@ -150,7 +150,7 @@ class Pile implements \Countable, \Stringable
      */
     public function shuffle(?Randomizer $randomizer = null): void
     {
-        $this->cards = \array_values(($randomizer ?? new Randomizer())->shuffleArray($this->cards));
+        $this->cards = ($randomizer ?? new Randomizer())->shuffleArray($this->cards);
     }
 
     public function has(Card $card): bool

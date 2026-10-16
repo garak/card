@@ -53,7 +53,7 @@ final readonly class CardValues
 
     public function withRank(Rank $rank, int $value): self
     {
-        return new self([...$this->byRank, $rank->value => $value], $this->byCard, $this->default);
+        return new self(\array_replace($this->byRank, [$rank->value => $value]), $this->byCard, $this->default);
     }
 
     /**
